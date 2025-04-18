@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --error-color: #f72585;
+            --success-color: #4cc9f0;
+            --border-color: #e2e8f0;
+            --text-color: #2d3748;
+            --light-gray: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-color);
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 450px;
+            transition: all 0.3s ease;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background-color: var(--light-gray);
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        input.error-border {
+            border-color: var(--error-color);
+        }
+        
+        .error {
+            color: var(--error-color);
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+        
+        button {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-top: 0.5rem;
+        }
+        
+        button:hover {
+            background-color: #3a56d4;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .success-message {
+            display: none;
+            text-align: center;
+            color: var(--success-color);
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Create Your Account</h1>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="John Doe">
+                <div id="nameError" class="error">Please enter your name</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="you@example.com">
+                <div id="emailError" class="error">Please enter a valid email</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="At least 6 characters">
+                <div id="passwordError" class="error">Password must be 6+ characters</div>
+            </div>
+            
+            <button type="submit" id="submitBtn" disabled>Sign Up</button>
+            <div id="successMessage" class="success-message">Registration successful!</div>
+        </form>
+    </div>
+
+    <script>
+        // Get form elements
+        const form = document.getElementById('registrationForm');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        
+        // Error elements
+        const nameError = document.getElementById('nameError');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        
+        // Validation functions
+        function validateName() {
+            const isValid = nameInput.value.trim() !== '';
+            if (!isValid) {
+                nameInput.classList.add('error-border');
+                nameError.style.display = 'block';
+            } else {
+                nameInput.classList.remove('error-border');
+                nameError.style.display = 'none';
+            }
+            return isValid;
+        }
+        
+        function validateEmail() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isValid = emailRegex.test(emailInput.value);
+            if (!isValid) {
+                emailInput.classList.add('error-border');
+                emailError.style.display = 'block';
+            } else {
+                emailInput.classList.remove('error-border');
+                emailError.style.display = 'none';
+            }
+            return isValid;
+        }
+        
+        function validatePassword() {
+            const isValid = passwordInput.value.length >= 6;
+            if (!isValid) {
+                passwordInput.classList.add('error-border');
+                passwordError.style.display = 'block';
+            } else {
+                passwordInput.classList.remove('error-border');
+                passwordError.style.display = 'none';
+            }
+            return isValid;
+        }
+        
+        // Check if all fields are valid
+        function validateForm() {
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isPasswordValid = validatePassword();
+            
+            submitBtn.disabled = !(isNameValid && isEmailValid && isPasswordValid);
+        }
+        
+        // Event listeners for real-time validation
+        nameInput.addEventListener('input', validateForm);
+        emailInput.addEventListener('input', validateForm);
+        passwordInput.addEventListener('input', validateForm);
+        
+        // Form submission
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (validateName() && validateEmail() && validatePassword()) {
+                successMessage.style.display = 'block';
+                submitBtn.disabled = true;
+                
+                // Here you would typically send the data to a server
+                setTimeout(() => {
+                    successMessage.textContent = "Redirecting...";
+                    // form.submit();
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>
